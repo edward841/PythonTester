@@ -4,13 +4,32 @@ import time
 def timer(func):
     def wrapper(*args, **kwargs):
         start = time.process_time()
-        func(*args, **kwargs)
+        
+        result = func(*args, **kwargs)
+        
         end = time.process_time()
         elapsed = end - start
-        print(f"Time elapsed: {elapsed}")
-    
+        
+        return result 
     return wrapper
 
+def fancytimer(outfunc):
+    def decorator_output(func):
+        def wrapper(*args, **kwargs):
+            start = time.process_time()
+            
+            result = func(*args, **kwargs)
+            
+            end = time.process_time()
+            outfunc(end-start)
+            return result 
+        return wrapper
+    return decorator_output
+
+def out(x):
+    print(x)
+
+@fancytimer(outfunc=out)
 def fibbonacci1(n):
     a = 1
     b = 1
@@ -34,4 +53,4 @@ if __name__ == "__main__":
 
 
     for i in range(1,10):
-        print(fibbonacci3(i))
+        print(fibbonacci1(i))

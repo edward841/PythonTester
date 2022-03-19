@@ -20,5 +20,6 @@ class TestFibbonacci(unittest.TestCase):
 
     def test_huge(self):
         self.assertEqual(fibbonacci1(100), 354224848179261915075)
+
 if __name__ == "__main__":
     unittest.main()
