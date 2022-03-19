@@ -1,7 +1,6 @@
 import csv
 
 class VersionData:
-            
     def __init__(self, header):
         self.header = header
         self.text = []
@@ -13,7 +12,7 @@ class VersionData:
     def addData(self, line):
         self.data.append(line)
 
-    def updateData(self, param, value):
+    def updateData(self, param, value, maximum=None):
         dataIndex = -1
         for i in range(len(self.data)):
             if self.data[i][1] == param:
@@ -22,12 +21,13 @@ class VersionData:
         if dataIndex == -1:
             dataIndex = len(self.data)
             self.data.append([str(dataIndex+1), param])
-
-        self.data[dataIndex].append(value)
         
-        if len(self.data[dataIndex])-2 > int(self.text[0][1]):
-            self.text[0][1] = str(int(self.text[0][1]) + 1)
-            self.text[-1].append(f"R{self.text[0][1]}")
+        if maximum == None or len(self.data[dataIndex])-2 < maximum:
+            self.data[dataIndex].append(value)
+        
+            if len(self.data[dataIndex])-2 > int(self.text[0][1]):
+                self.text[0][1] = str(int(self.text[0][1]) + 1)
+                self.text[-1].append(f"R{self.text[0][1]}")
 
 def getData(filename):
     data = []
@@ -67,7 +67,7 @@ def newVersion(label):
     version.addText(["Test", "Input"])
     return version
 
-def updateData(filename, version, param, value):
+def updateData(filename, version, param, value, maximum=None):
     data = getData(filename)
     recordIndex = -1
     for i in range(len(data)):
@@ -78,7 +78,7 @@ def updateData(filename, version, param, value):
         data.append(newVersion(version))
         recordIndex = len(data) - 1
     
-    data[recordIndex].updateData(param, value)
+    data[recordIndex].updateData(param, value, maximum)
 
     writeData(filename, data)
 

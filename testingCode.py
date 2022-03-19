@@ -1,7 +1,23 @@
-from testDecorators import *
+from testDecorators import recordtime
 import unittest
+import functools
 
-funct = fibbonacci3
+@recordtime(output="fibbonacciTimes.csv", version="Memoization")
+@functools.lru_cache
+def fibbonacci1(n):
+    if n <= 2:
+        return 1
+    return fibbonacci1(n-1) + fibbonacci1(n-2)
+
+@recordtime(output="fibbonacciTimes.csv", version="Dynamic programming: Bottom-up")
+def fibbonacci2(n):
+    a = 1
+    b = 1
+    for _ in range(2,n):
+        a,b = b, a+b
+    return b
+
+funct = fibbonacci2
 
 class TestFibbonacci(unittest.TestCase):
     
@@ -9,24 +25,16 @@ class TestFibbonacci(unittest.TestCase):
         """
         Test that the small values are correct 
         """
-        print("Testing small")
         expected = [1,1,2,3,5,8,13,21,34,55]
         for i in range(1, 11):
             with self.subTest(i=i):
                 self.assertEqual(funct(i), expected[i-1])
 
-    @unittest.skip("Takes a while")
     def test_tens(self):
-        print("Testing tens")
-        expected = [6765,832040,102334155,12586269025, 1548008755920]
-        for i in range(len(expected)-3):
+        expected = [6765,832040]
+        for i in range(len(expected)):
             with self.subTest(i=i):
                 self.assertEqual(funct(i*10+20), expected[i])
-    
-    @unittest.skip("Way too big!")
-    def test_huge(self):
-        print("Testing huge")
-        self.assertEqual(funct(100), 354224848179261915075)
 
 if __name__ == "__main__":
     unittest.main()
