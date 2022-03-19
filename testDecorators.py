@@ -1,17 +1,6 @@
-from functools import lru_cache
+import functools
 import time
-
-def timer(func):
-    def wrapper(*args, **kwargs):
-        start = time.process_time()
-        
-        result = func(*args, **kwargs)
-        
-        end = time.process_time()
-        elapsed = end - start
-        
-        return result 
-    return wrapper
+from testingFiles import updateData
 
 def fancytimer(outfunc):
     def decorator_output(func):
@@ -26,10 +15,24 @@ def fancytimer(outfunc):
         return wrapper
     return decorator_output
 
-def out(x):
-    print(x)
+def recordtime(output, version):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            bt = time.process_time()
+            result = func(*args, **kwargs)
+            et = time.process_time()
+            
+            elapsed = et - bt
+            args_repr = [repr(a) for a in args] 
+            kwargs_repr = [f"{k}={v!r}" for k, v in kwargs.items()]
+            signature = ", ".join(args_repr + kwargs_repr)
+            updateData(output, version, signature, elapsed)
+            return result
+        return wrapper
+    return decorator
 
-@fancytimer(outfunc=out)
+@recordtime(output="fibbonacciTimes.csv", version="1")
 def fibbonacci1(n):
     a = 1
     b = 1
@@ -37,12 +40,14 @@ def fibbonacci1(n):
         a,b = b, a+b
     return b
 
+@recordtime(output="fibbonaciTimes.csv", version="2")
 def fibbonacci2(n):
     if n <= 2:
         return 1
     return fibbonacci2(n-1) + fibbonacci2(n-2)
 
-@lru_cache
+@recordtime(output="fibbonaciTimes.csv", version="3")
+@functools.lru_cache
 def fibbonacci3(n):
     if n <= 2:
         return 1
@@ -53,4 +58,4 @@ if __name__ == "__main__":
 
 
     for i in range(1,10):
-        print(fibbonacci1(i))
+        print(fibbonacci3(i))
