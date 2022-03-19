@@ -13,7 +13,7 @@ class VersionData:
     def addData(self, line):
         self.data.append(line)
 
-    def addTime(self, param, time):
+    def updateData(self, param, value):
         dataIndex = -1
         for i in range(len(self.data)):
             if self.data[i][1] == param:
@@ -23,9 +23,9 @@ class VersionData:
             dataIndex = len(self.data)
             self.data.append([str(dataIndex+1), param])
 
-        self.data[dataIndex].append(time)
+        self.data[dataIndex].append(value)
         
-        if len(self.data[dataIndex]) > int(self.text[0][1]):
+        if len(self.data[dataIndex])-2 > int(self.text[0][1]):
             self.text[0][1] = str(int(self.text[0][1]) + 1)
             self.text[-1].append(f"R{self.text[0][1]}")
 
@@ -47,7 +47,7 @@ def getData(filename):
                     version.addData(line)
             data.append(version)
     except FileNotFoundError:
-        print("Did not find the file:", filename)
+        pass
 
     return data
 
@@ -67,7 +67,7 @@ def newVersion(label):
     version.addText(["Test", "Input"])
     return version
 
-def updateTimes(filename, version, param, time):
+def updateData(filename, version, param, value):
     data = getData(filename)
     recordIndex = -1
     for i in range(len(data)):
@@ -78,9 +78,9 @@ def updateTimes(filename, version, param, time):
         data.append(newVersion(version))
         recordIndex = len(data) - 1
     
-    data[recordIndex].addTime(param, time)
+    data[recordIndex].updateData(param, value)
 
     writeData(filename, data)
 
 if __name__ == "__main__":
-    updateTimes("testingRecord.csv", "1", "10", 0.12312)
+    updateData("testingRecord.csv", "potatoes", "10", 0.12312)
