@@ -40,13 +40,13 @@ def fibbonacci1(n):
         a,b = b, a+b
     return b
 
-@recordtime(output="fibbonaciTimes.csv", version="2")
+@recordtime(output="fibbonacciTimes.csv", version="2")
 def fibbonacci2(n):
     if n <= 2:
         return 1
     return fibbonacci2(n-1) + fibbonacci2(n-2)
 
-@recordtime(output="fibbonaciTimes.csv", version="3")
+@recordtime(output="fibbonacciTimes.csv", version="3")
 @functools.lru_cache
 def fibbonacci3(n):
     if n <= 2:
