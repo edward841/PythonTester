@@ -1,4 +1,4 @@
-from testDecorators import recordtime
+from transcriber import recordtime
 import unittest
 import functools
 
