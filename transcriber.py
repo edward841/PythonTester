@@ -74,7 +74,8 @@ def updateData(filename, version, param, value, maximum=None):
     for i in range(len(data)):
         if data[i].header[1] == version:
             recordIndex = i
-    
+            break
+
     if recordIndex == -1:
         data.append(newVersion(version))
         recordIndex = len(data) - 1
@@ -83,6 +84,28 @@ def updateData(filename, version, param, value, maximum=None):
 
     writeData(filename, data)
 
+def deleteRecord(filename, version, safeguard=True):
+    data = getData(filename)
+    if len(data) == 0:
+        print(f"Attempted to delete from the file {filename}, but file does not exist")
+        return None
+
+    recordIndex = -1
+    for i in range(len(data)):
+        if data[i].header[1] == version:
+            recordIndex = i
+            break
+    
+    if recordIndex == -1:
+        print(f"Attempted to delete the version {version} on file {filename}, but version does not exist")
+        return None
+    
+    confirmation = ''
+    if safeguard:
+        confirmation = input(f"Deleting version {version} on file {filename}. Enter YES to confirm you want to continue:\n")
+    if not safeguard or confirmation == 'YES':
+        data.pop(recordIndex)
+        writeData(filename, data)
 
 def timerToFunction(outfunc):
     def decorator_output(func):
