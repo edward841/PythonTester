@@ -50,11 +50,10 @@ def getData(filename):
             data.append(version)
     except FileNotFoundError:
         pass
-
     return data
 
 def writeData(filename, data):
-    with open(filename, "w") as f:
+    with open(filename, "w", newline='') as f:
         writer = csv.writer(f)
         for version in data:
             writer.writerow(version.header)
